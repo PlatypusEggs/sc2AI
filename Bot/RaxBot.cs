@@ -80,11 +80,11 @@ namespace Bot
             }
 
             //keep on buildings depots if supply is tight
-            if (controller.maxSupply - controller.currentSupply <= 5) {
-                if (controller.CanConstruct(Units.SUPPLY_DEPOT)) {
-                    controller.Construct(Units.SUPPLY_DEPOT);
-                }
-            }
+            //if (controller.maxSupply - controller.currentSupply <= 5) {
+            //    if (controller.CanConstruct(Units.SUPPLY_DEPOT)) {
+            //        controller.Construct(Units.SUPPLY_DEPOT);
+            //    }
+            //}
             
             //build barracks
             //if (controller.CanConstruct(Units.BARRACKS)) {

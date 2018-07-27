@@ -11,13 +11,16 @@ namespace Bot
         private static Race race = Race.Terran;
 
         // Settings for single player mode.
-//        private static string mapName = "AbyssalReefLE.SC2Map";
-//        private static string mapName = "AbiogenesisLE.SC2Map";
-        
-        private static string mapName = "(2)DreamcatcherLE.SC2Map";
-//        private static string mapName = "FrostLE.SC2Map";
-        private static Race opponentRace = Race.Random;
-        private static Difficulty opponentDifficulty = Difficulty.VeryEasy;
+        //        private static string mapName = "AbyssalReefLE.SC2Map";
+        //        private static string mapName = "AbiogenesisLE.SC2Map";
+
+        //private static string mapName = "(2)DreamcatcherLE.SC2Map";
+        //private static string mapName = "(2)LostandFoundLE.SC2Map";
+        private static string mapName = "(2)AcidPlantLE.SC2Map";
+        //        private static string mapName = "FrostLE.SC2Map";
+        private static Race opponentRace = Race.Zerg;
+        //rarely beat harder
+        private static Difficulty opponentDifficulty = Difficulty.Hard;
 
         public static GameConnection gc = null;
         

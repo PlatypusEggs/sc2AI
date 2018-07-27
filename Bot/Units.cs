@@ -46,6 +46,7 @@ namespace Bot
         public static uint FACTORY_FLYING = 43;
         public static uint STARPORT_FLYING = 44;
         public static uint SCV = 45;
+        public static uint MULE = 268;
         public static uint BARRACKS_FLYING = 46;
         public static uint SUPPLY_DEPOT_LOWERED = 47;
         public static uint MARINE = 48;
@@ -146,6 +147,7 @@ namespace Bot
         public static uint XEL_NAGA_TOWER = 149;
         public static uint INFESTED_TERRANS_EGG = 150;
         public static uint LARVA = 151;
+        public static uint BROODLING = 289;
         public static uint MINERAL_FIELD = 341;
         public static uint VESPENE_GEYSER = 342;
         public static uint SPACE_PLATFORM_GEYSER = 343;
@@ -162,168 +164,6 @@ namespace Bot
         public static uint PURIFIER_MINERAL_FIELD_750 = 885;
         public static uint BATTLE_STATION_MINERAL_FIELD = 886;
         public static uint BATTLE_STATION_MINERAL_FIELD_750 = 887;
-
-
-        public static HashSet<uint> All = new HashSet<uint> {
-            COLOSSUS,
-            TECH_LAB,
-            REACTOR,
-            INFESTOR_TERRAN,
-            BANELING_COCOON,
-            BANELING,
-            MOTHERSHIP,
-            POINT_DEFENSE_DRONE,
-            CHANGELING,
-            CHANGELING_ZEALOT,
-            CHANGELING_MARINE_SHIELD,
-            CHANGELING_MARINE,
-            CHANGELING_ZERGLING_WINGS,
-            CHANGELING_ZERGLING,
-            COMMAND_CENTER,
-            SUPPLY_DEPOT,
-            REFINERY,
-            BARRACKS,
-            ENGINEERING_BAY,
-            MISSILE_TURRET,
-            BUNKER,
-            SENSOR_TOWER,
-            GHOST_ACADEMY,
-            FACTORY,
-            STARPORT,
-            ARMORY,
-            FUSION_CORE,
-            AUTO_TURRET,
-            SIEGE_TANK_SIEGED,
-            SIEGE_TANK,
-            VIKING_ASSUALT,
-            VIKING_FIGHTER,
-            COMMAND_CENTER_FLYING,
-            BARRACKS_TECH_LAB,
-            BARRACKS_REACTOR,
-            FACTORY_TECH_LAB,
-            FACTORY_REACTOR,
-            STARPORT_TECH_LAB,
-            STARPORT_REACTOR,
-            FACTORY_FLYING,
-            STARPORT_FLYING,
-            SCV,
-            BARRACKS_FLYING,
-            SUPPLY_DEPOT_LOWERED,
-            MARINE,
-            REAPER,
-            GHOST,
-            MARAUDER,
-            THOR,
-            HELLION,
-            MEDIVAC,
-            BANSHEE,
-            RAVEN,
-            BATTLECRUISER,
-            NUKE,
-            NEXUS,
-            PYLON,
-            ASSIMILATOR,
-            GATEWAY,
-            FORGE,
-            FLEET_BEACON,
-            TWILIGHT_COUNSEL,
-            PHOTON_CANNON,
-            STARGATE,
-            TEMPLAR_ARCHIVE,
-            DARK_SHRINE,
-            ROBOTICS_BAY,
-            ROBOTICS_FACILITY,
-            CYBERNETICS_CORE,
-            ZEALOT,
-            STALKER,
-            HIGH_TEMPLAR,
-            DARK_TEMPLAR,
-            SENTRY,
-            PHOENIX,
-            CARRIER,
-            VOID_RAY,
-            WARP_PRISM,
-            OBSERVER,
-            IMMORTAL,
-            PROBE,
-            INTERCEPTOR,
-            HATCHERY,
-            CREEP_TUMOR,
-            EXTRACTOR,
-            SPAWNING_POOL,
-            EVOLUTION_CHAMBER,
-            HYDRALISK_DEN,
-            SPIRE,
-            ULTRALISK_CAVERN,
-            INVESTATION_PIT,
-            NYDUS_NETWORK,
-            BANELING_NEST,
-            ROACH_WARREN,
-            SPINE_CRAWLER,
-            SPORE_CRAWLER,
-            LAIR,
-            HIVE,
-            GREATER_SPIRE,
-            EGG,
-            DRONE,
-            ZERGLING,
-            OVERLORD,
-            HYDRALISK,
-            MUTALISK,
-            ULTRALISK,
-            ROACH,
-            INFESTOR,
-            CORRUPTOR,
-            BROOD_LORD_COCOON,
-            BROOD_LORD,
-            BANELING_BURROWED,
-            DRONE_BURROWED,
-            HYDRALISK_BURROWED,
-            ROACH_BURROWED,
-            ZERGLING_BURROWED,
-            INFESTOR_TERRAN_BURROWED,
-            QUEEN_BURROWED,
-            QUEEN,
-            INFESTOR_BURROWED,
-            OVERLORD_COCOON,
-            OVERSEER,
-            PLANETARY_FORTRESS,
-            ULTRALISK_BURROWED,
-            ORBITAL_COMMAND,
-            WARP_GATE,
-            ORBITAL_COMMAND_FLYING,
-            FORCE_FIELD,
-            WARP_PRISM_PHASING,
-            CREEP_TUMOR_BURROWED,
-            CREEP_TUMOR_QUEEN,
-            SPINE_CRAWLER_UPROOTED,
-            SPORE_CRAWLER_UPROOTED,
-            ARCHON,
-            NYDUS_CANAL,
-            BROODLING_ESCORT,
-            RICH_MINERAL_FIELD,
-            RICH_MINERAL_FIELD_750,
-            URSADON,
-            XEL_NAGA_TOWER,
-            INFESTED_TERRANS_EGG,
-            LARVA,
-            MINERAL_FIELD,
-            VESPENE_GEYSER,
-            SPACE_PLATFORM_GEYSER,
-            RICH_VESPENE_GEYSER,
-            MINERAL_FIELD_750,
-            PROTOSS_VESPENE_GEYSER,
-            LAB_MINERAL_FIELD,
-            LAB_MINERAL_FIELD_750,
-            PURIFIER_RICH_MINERAL_FIELD,
-            PURIFIER_RICH_MINERAL_FIELD_750,
-            PURIFIER_VESPENE_GEYSER,
-            SHAKURAS_VESPENE_GEYSER,
-            PURIFIER_MINERAL_FIELD,
-            PURIFIER_MINERAL_FIELD_750,
-            BATTLE_STATION_MINERAL_FIELD,
-            BATTLE_STATION_MINERAL_FIELD_750
-        };
 
         public static HashSet<uint> Buildings = new HashSet<uint>
             {
@@ -484,7 +324,22 @@ namespace Bot
                 ZERGLING,
                 ZERGLING_BURROWED
             };
-        
+
+        public static HashSet<uint> MeleeOrLowRangeUnits = new HashSet<uint>
+            {
+                ARCHON,
+                BANELING,
+                DARK_TEMPLAR,
+                ROACH,
+                ULTRALISK,
+                ZEALOT,
+                ZERGLING,
+                PROBE,
+                SCV,
+                DRONE,
+                BROODLING
+            };
+
         public static HashSet<uint> ResourceCenters = new HashSet<uint>
             {
                 COMMAND_CENTER,
@@ -532,7 +387,8 @@ namespace Bot
             {
                 SCV,
                 PROBE,
-                DRONE
+                DRONE,
+                MULE
         };
         
         

@@ -196,8 +196,11 @@ namespace Bot
 
                 if (response.Status == Status.Ended || response.Status == Status.Quit)
                     break;
-                
-                IEnumerable<SC2APIProtocol.Action> actions = bot.OnFrame(observation, playerId);
+                RequestQuery requests = bot.PreFrame(observation, playerId);
+
+                ResponseQuery responses = await SendQuery(requests);
+
+                IEnumerable<SC2APIProtocol.Action> actions = bot.OnFrame(observation, playerId, responses);
 
                 Request actionRequest = new Request();
                 actionRequest.Action = new RequestAction();

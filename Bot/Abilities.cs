@@ -8,11 +8,17 @@ namespace Bot
 
         public static int BUILD_COMMAND_CENTER = 318;
         public static int BUILD_SUPPLY_DEPOT = 319;
+        public static int BUILD_REFINERY = 320;
         public static int BUILD_BARRACKS = 321;
         public static int BUILD_BUNKER = 324;
-        
+
+        public static int BUILD_TECH_LAB_BARRACKS = 421;
+        public static int BUILD_REACTOR_BARRACKS = 422;
+
         public static int TRAIN_SCV = 524;
         public static int TRAIN_MARINE = 560;
+        public static int TRAIN_MARAUDER = 563;
+        
         
         public static int CANCEL_CONSTRUCTION = 314;       
         public static int CANCEL = 3659;
@@ -35,14 +41,33 @@ namespace Bot
         //gathering/returning minerals
         public static int GATHER_MINERALS = 295;
         public static int RETURN_MINERALS = 296;
+
+
+        //tech
+        public static int RESEARCH_STIM = 730;
+        public static int RESEARCH_COMBAT_SHIELDS = 731;
+        public static int RESEARCH_CONCUSSIVE_SHELLS = 732;
         
-        
+
+        //unit abilities
+        public static int STIM_MARAUDER = 253;
+        public static int STIM_MARINE = 380;
+        public static int CALLDOWN_MULE = 171;
+
+        //building upgrades
+        public static int UPGRADE_TO_ORBITAL = 1516;
+        //public static int CANCEL_QUEUE = 3659;
+
+
+
+
         public static readonly Dictionary<uint, int> FromBuilding = new Dictionary<uint, int>()
         {
             { Units.SUPPLY_DEPOT, BUILD_SUPPLY_DEPOT },
             { Units.BARRACKS, BUILD_BARRACKS },
             { Units.BUNKER, BUILD_BUNKER },
-            { Units.COMMAND_CENTER, BUILD_COMMAND_CENTER }
+            { Units.COMMAND_CENTER, BUILD_COMMAND_CENTER },
+            { Units.REFINERY, BUILD_REFINERY }
         };
         
     }

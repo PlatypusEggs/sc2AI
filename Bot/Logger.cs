@@ -16,9 +16,9 @@ namespace Bot {
                     
             string msg = "[" + DateTime.UtcNow.ToString("HH:mm:ss") + " INFO] " + String.Format(line, parameters);
 
-            //System.IO.StreamWriter file = new System.IO.StreamWriter(logFile, true);
-            //file.WriteLine(msg);
-            //file.Close();
+            System.IO.StreamWriter file = new System.IO.StreamWriter(logFile, true);
+            file.WriteLine(msg);
+            file.Close();
             Console.WriteLine(msg, parameters);
         }
     }

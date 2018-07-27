@@ -47,9 +47,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArmyManagementMode.cs" />
+    <Compile Include="Buffs.cs" />
     <Compile Include="Abilities.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="Macro\Controller_EnergyManager.cs" />
+    <Compile Include="Macro\Controller_TechManager.cs" />
+    <Compile Include="Macro\Controller_UnitConstructor.cs" />
+    <Compile Include="Micro\Controller_ArmyManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Protocol\Common.cs" />
     <Compile Include="Protocol\Data.cs" />
@@ -62,12 +68,16 @@
     <Compile Include="Protocol\Spatial.cs" />
     <Compile Include="Protocol\Ui.cs" />
     <Compile Include="MineralDistances.cs" />
+    <Compile Include="Wrappers\CloseFrameResponse.cs" />
+    <Compile Include="Wrappers\VectorWrapper.cs" />
+    <Compile Include="Wrappers\UnitWrapper.cs" />
     <Compile Include="Wrapper\Interface.cs" />
     <Compile Include="Wrapper\CommandLine.cs" />
     <Compile Include="Wrapper\GameConnection.cs" />
     <Compile Include="Wrapper\ProtobufProxy.cs" />
     <Compile Include="Units.cs" />
-    <Compile Include="RaxBot.cs" />
+    <Compile Include="ZendoBot.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

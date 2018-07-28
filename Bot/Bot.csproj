@@ -68,6 +68,7 @@
     <Compile Include="Protocol\Spatial.cs" />
     <Compile Include="Protocol\Ui.cs" />
     <Compile Include="MineralDistances.cs" />
+    <Compile Include="ScUtil.cs" />
     <Compile Include="Wrappers\CloseFrameResponse.cs" />
     <Compile Include="Wrappers\VectorWrapper.cs" />
     <Compile Include="Wrappers\UnitWrapper.cs" />

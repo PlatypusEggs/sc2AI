@@ -102,13 +102,13 @@ namespace Bot
                 else
                 {
                     //if the distance is small, we are well clumped so:
-                    if (enemyArmyCount <= units.army.Count)
+                    if (ScUtil.ArmyComparison(units.army, enemyUnits.army) > 1)
                     {
-                        armyManagementMode = ArmyManagementMode.attackMode;
+                        armyManagementMode = ArmyManagementMode.defendMode;
                     }
                     else if (enemyArmyCount > units.army.Count)
                     {
-                        armyManagementMode = ArmyManagementMode.defendMode;
+                        armyManagementMode = ArmyManagementMode.attackMode;
                     }
                 }
             }

@@ -17,7 +17,7 @@ namespace Bot
                 if(barracks.BuildProgress == 1 && barracks.AddOnTag == 0 && barracks.Orders.Count == 0)
                 {
                     SC2APIProtocol.Action action = new SC2APIProtocol.Action();
-                    if (units.techLabs.Count > units.reactors.Count)
+                    if (units.techLabs.Count > units.reactors.Count || units.techLabs.Count > 1)
                     {
                         if (vespene > 50)
                             action = CreateRawUnitCommand(Abilities.BUILD_REACTOR_BARRACKS);
@@ -30,6 +30,22 @@ namespace Bot
                             action = CreateRawUnitCommand(Abilities.BUILD_TECH_LAB_BARRACKS);
                     }
                     action.ActionRaw.UnitCommand.UnitTags.Add(barracks.Tag);
+                    AddAction(action);
+                }
+            }
+        }
+
+        public void ClotheNakedStarports()
+        {
+            if (vespene < 50 || minerals < 50)
+                return;
+            foreach (Unit starport in units.starports)
+            {
+                if (starport.BuildProgress == 1 && starport.AddOnTag == 0 && starport.Orders.Count == 0)
+                {
+                    SC2APIProtocol.Action action = new SC2APIProtocol.Action();
+                    action = CreateRawUnitCommand(Abilities.BUILD_REACTOR_STARPORT);
+                    action.ActionRaw.UnitCommand.UnitTags.Add(starport.Tag);
                     AddAction(action);
                 }
             }

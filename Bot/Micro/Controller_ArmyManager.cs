@@ -11,6 +11,7 @@ namespace Bot
     {
 
         private ArmyManagementMode armyManagementMode = ArmyManagementMode.defendMode;
+
         public void ManageArmyMovements()
         {
             float medianX = 0;
@@ -82,7 +83,7 @@ namespace Bot
 
             //Logger.Info("averageDistance = " + somePercentileOfDistancesFromTheMedian + " " + medianX + " " + medianY);
             // This number needs to scale with the army count!
-            if (somePercentileOfDistancesFromTheMedian > 2)
+            if (somePercentileOfDistancesFromTheMedian > 2 * (units.army.Count / 20))
             {
                 armyManagementMode = ArmyManagementMode.clumpMode;
             }
@@ -91,7 +92,7 @@ namespace Bot
                 // is this average distance small? (Are we well clumped)?
                 if (enemyArmyCount == 0)
                 {
-                    if (units.army.Count > (units.workers.Count / 2.5))
+                    if (units.army.Count > (units.workers.Count / 2.1))
                         armyManagementMode = ArmyManagementMode.attackMode;
                     else if (units.army.Count <= (units.workers.Count / 4))
                         armyManagementMode = ArmyManagementMode.defendMode;
@@ -121,18 +122,18 @@ namespace Bot
             // take action based on the mode and if there are any enemies around
             //
             //Logger.Info("Mode = " + armyManagementMode);
+            Vector3 medianVector = new Vector3(medianX, medianY, zVal);
+
+            Attack(units.armySupport, medianVector);
 
             if (armyManagementMode == ArmyManagementMode.clumpMode)
             {
-                Vector3 medianVector = new Vector3(medianX, medianY, zVal);
                 if (enemyArmyCount == 0)
                 {
                     Attack(units.army, medianVector);
                 }
                 else
                 {
-
-
                     foreach (UnitWrapper unit in units.army)
                     {
                         Unit targetUnit = new Unit();
@@ -237,6 +238,11 @@ namespace Bot
             }
         }
 
+        public void ManageArmySupportMovements()
+        {
+
+        }
+
         public void ManageStim()
         {
             int enemyCount = enemyUnits.army.Count;
@@ -308,7 +314,6 @@ namespace Bot
                     returnAction.ActionRaw.UnitCommand.TargetUnitTag = refinery.Tag;
                     returnAction.ActionRaw.UnitCommand.QueueCommand = true;
                     AddAction(returnAction);
-
                 }
             }
 
@@ -378,29 +383,34 @@ namespace Bot
                         // returning minerals
                         if (worker.Orders.Count == 1 && (worker.Orders[0].AbilityId == 295 || worker.Orders[0].AbilityId == 296) && worker.Orders[0].TargetUnitTag == buildingToCheck.Tag)
                         {
-                            Unit FreshCommandCenter = new Unit();
-                            foreach (Unit commandCenterNotOurs in units.resourceCenters)
+                            var returnAction = new SC2APIProtocol.Action();
+                            
+                            if (buildingToCheck.UnitType != Units.REFINERY)
                             {
-                                if (commandCenterNotOurs.AssignedHarvesters <= commandCenterNotOurs.IdealHarvesters)
-                                    FreshCommandCenter = commandCenterNotOurs;
+                                Unit FreshCommandCenter = new Unit();
+                                foreach (Unit commandCenterNotOurs in units.resourceCenters)
+                                {
+                                    if (commandCenterNotOurs.AssignedHarvesters <= commandCenterNotOurs.IdealHarvesters)
+                                        FreshCommandCenter = commandCenterNotOurs;
+                                }
+                                if (FreshCommandCenter.Tag == 0)
+                                    return;
+                                Unit closeMineralField = new Unit();
+                                foreach (Unit mineralField in units.mineralFields)
+                                {
+                                    if (GetDistance(mineralField, FreshCommandCenter) < 10)
+                                        closeMineralField = mineralField;
+                                }
+                                returnAction = CreateRawUnitCommand(Abilities.STOP);
                             }
-                            if (FreshCommandCenter.Tag == 0)
-                                return;
-                            Unit closeMineralField = new Unit();
-                            foreach (Unit mineralField in units.mineralFields)
+                            else
                             {
-                                if (GetDistance(mineralField, FreshCommandCenter) < 10)
-                                    closeMineralField = mineralField;
+                                returnAction = CreateRawUnitCommand(Abilities.SMART);
                             }
-                            var returnAction = CreateRawUnitCommand(Abilities.SMART);
                             returnAction.ActionRaw.UnitCommand.UnitTags.Add(worker.Tag);
-                            returnAction.ActionRaw.UnitCommand.TargetUnitTag = closeMineralField.Tag;
-                            returnAction.ActionRaw.UnitCommand.QueueCommand = true;
                             AddAction(returnAction);
                             break;
-
                         }
-
                     }
                 }
             }

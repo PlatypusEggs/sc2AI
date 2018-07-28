@@ -11,15 +11,26 @@ namespace Bot
         public static int BUILD_REFINERY = 320;
         public static int BUILD_BARRACKS = 321;
         public static int BUILD_BUNKER = 324;
+        public static int BUILD_FACTORY = 328;
+        public static int BUILD_STARPORT = 329; 
+
 
         public static int BUILD_TECH_LAB_BARRACKS = 421;
         public static int BUILD_REACTOR_BARRACKS = 422;
 
+        public static int BUILD_TECH_LAB_STARPORT = 3682;
+        public static int BUILD_REACTOR_STARPORT = 3683;
+
+
         public static int TRAIN_SCV = 524;
+
         public static int TRAIN_MARINE = 560;
         public static int TRAIN_MARAUDER = 563;
-        
-        
+
+        public static int TRAIN_MEDIVAC = 620;
+
+
+
         public static int CANCEL_CONSTRUCTION = 314;       
         public static int CANCEL = 3659;
         public static int CANCEL_LAST = 3671;
@@ -67,7 +78,9 @@ namespace Bot
             { Units.BARRACKS, BUILD_BARRACKS },
             { Units.BUNKER, BUILD_BUNKER },
             { Units.COMMAND_CENTER, BUILD_COMMAND_CENTER },
-            { Units.REFINERY, BUILD_REFINERY }
+            { Units.REFINERY, BUILD_REFINERY },
+            { Units.FACTORY, BUILD_FACTORY},
+            { Units.STARPORT, BUILD_STARPORT }
         };
         
     }

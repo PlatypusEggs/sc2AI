@@ -68,10 +68,8 @@ namespace Bot
             //TODO
 
             // build tech up to medivacs
-            // micro things like pull back if you are alone 
-            // or pull back if you have low hp and others around you have more
-
-            // build correct natural but pathing is hard ;_;
+            // tech upgrades
+            // micro things (see attack method)
 
             controller.OpenFrame(gameInfo, obs, responses);
 
@@ -96,14 +94,14 @@ namespace Bot
             //Logger.Info("Building supply depots" + watch.ElapsedMilliseconds.ToString());
 
             //keep on buildings depots if supply is tight
-            if (controller.maxSupply - controller.currentSupply <= 5 && controller.currentSupply != controller.maxSupply)
-            {
-                closeToSupplyBlocked = true;
+            //if (controller.maxSupply - controller.currentSupply <= 5 && controller.currentSupply != controller.maxSupply)
+            //{
+            //    closeToSupplyBlocked = true;
                 if (controller.CanConstruct(Units.SUPPLY_DEPOT))
                 {
                     controller.Construct(Units.SUPPLY_DEPOT);
                 }
-            }
+            //}
 
 
             // if oversaturated
@@ -120,7 +118,7 @@ namespace Bot
             {
                 foreach (Unit commandCenter in controller.units.resourceCenters)
                 {
-                    if ((commandCenter.AssignedHarvesters - 3) >= commandCenter.IdealHarvesters && commandCenter.IdealHarvesters > 0)
+                    if ((commandCenter.AssignedHarvesters - 1) >= commandCenter.IdealHarvesters && commandCenter.IdealHarvesters > 0)
                     {
                         needToExpand = true;
                     }
@@ -133,7 +131,7 @@ namespace Bot
             }
 
             //build Command Center
-            if (controller.CanConstruct(Units.COMMAND_CENTER))
+            if (controller.CanConstruct(Units.COMMAND_CENTER) && needToExpand)
             {
                 controller.Construct(Units.COMMAND_CENTER);
             }
@@ -145,8 +143,8 @@ namespace Bot
             if(controller.frame % 60 == 0)
             {
                 controller.DealWithOverSaturation(controller.units.resourceCenters);
-                controller.DealWithOverSaturation(controller.units.refineries);
                 controller.PopulateRefineries();
+                controller.DealWithOverSaturation(controller.units.refineries);
                 controller.DealWithLazyWorkers();
             }
 
@@ -154,11 +152,12 @@ namespace Bot
             {
                 needToResearch = controller.researchTech();
                 controller.ClotheNakedBarracks();
-                
+                controller.ClotheNakedStarports();
+
                 //train workers
                 foreach (var cc in controller.units.resourceCenters)
                 {
-                    if (controller.units.workers.Count < 60 && (controller.currentSupply != 13 || controller.units.buildings.Count != 1))
+                    if (controller.units.workers.Count < 70 && (controller.currentSupply != 13 || controller.units.buildings.Count != 1))
                         controller.TrainWorker(cc);
 
                 }
@@ -171,10 +170,22 @@ namespace Bot
                     controller.Construct(Units.REFINERY);
                 }
 
+                //train medivacs units
+                if (!closeToSupplyBlocked && !needToResearch && controller.units.armySupport.Count < controller.units.army.Count / 2)
+                {
+                    foreach (Unit starport in controller.units.starports)
+                    {
+                        if (starport.AddOnTag == 0)
+                            continue;
+                        controller.TrainMedivac(starport);
+                    }
+
+                }
+
                 //train barracks units
                 if (!closeToSupplyBlocked && !needToResearch)
                 {
-                    foreach (var barracks in controller.units.barracks)
+                    foreach (Unit barracks in controller.units.barracks)
                     {
                         if (barracks.AddOnTag == 0)
                             controller.TrainMarine(barracks);
@@ -218,6 +229,14 @@ namespace Bot
         public RequestQuery PreFrame(ResponseObservation observation, uint playerId)
         {
             controller.OpenFrame(gameInfo, observation, null);
+            if (controller.CanConstruct(Units.STARPORT))
+            {
+                controller.ConstructQuereies(Units.STARPORT);
+            }
+            if (controller.CanConstruct(Units.FACTORY))
+            {
+                controller.ConstructQuereies(Units.FACTORY);
+            }
             if (controller.CanConstruct(Units.BARRACKS))
             {
                 controller.ConstructQuereies(Units.BARRACKS);

@@ -38,6 +38,7 @@ namespace Bot {
         public class UnitsHolder {
             public List<Unit> workers = new List<Unit>();
             public List<UnitWrapper> army = new List<UnitWrapper>();
+            public List<Unit> armySupport = new List<Unit>();
             public List<Unit> barracks = new List<Unit>();
             public List<Unit> depots = new List<Unit>();
             public List<Unit> buildings = new List<Unit>();
@@ -46,11 +47,14 @@ namespace Bot {
             public List<Unit> vespeneGeysers = new List<Unit>();
             public List<Unit> refineries = new List<Unit>();
             public List<Unit> reactors = new List<Unit>();
+            public List<Unit> factories = new List<Unit>();
+            public List<Unit> starports = new List<Unit>();
             public List<Unit> techLabs = new List<Unit>();
         }
 
 
         public List<UnitWrapper> mariners = new List<UnitWrapper>();
+        public List<Unit> medivacs = new List<Unit>();
         public List<UnitWrapper> marauders = new List<UnitWrapper>();
 
         public UnitsHolder units = new UnitsHolder();
@@ -136,9 +140,11 @@ namespace Bot {
         }
         #endregion
 
-        private void PopulateInventory() {
+        private void PopulateInventory()
+        {
             this.units = new UnitsHolder();
-            foreach (Unit unit in obs.Observation.RawData.Units) {
+            foreach (Unit unit in obs.Observation.RawData.Units)
+            {
                 if (unit.Alliance != Alliance.Self) continue;
                 //if (Units.ArmyUnits.Contains(unit.UnitType))
                 //    this.units.army.Add(new UnitWrapper(unit));
@@ -158,6 +164,12 @@ namespace Bot {
                 if ((unit.UnitType == Units.BARRACKS) || (unit.UnitType == Units.BARRACKS_FLYING))
                     this.units.barracks.Add(unit);
 
+                if (unit.UnitType == Units.FACTORY)
+                    this.units.factories.Add(unit);
+
+                if (unit.UnitType == Units.STARPORT)
+                    this.units.starports.Add(unit);
+
                 if (unit.UnitType == Units.REFINERY)
                     this.units.refineries.Add(unit);
 
@@ -169,11 +181,14 @@ namespace Bot {
 
 
                 //These are maintained and never reset
-                if (unit.UnitType == Units.MARINE && !this.mariners.Exists(x => x.unit.Tag == unit.Tag))
-                    this.mariners.Add(new UnitWrapper(unit));
-                    
-                if (unit.UnitType == Units.MARAUDER && !this.marauders.Exists(x => x.unit.Tag == unit.Tag))
-                    this.marauders.Add(new UnitWrapper(unit));
+                if (unit.UnitType == Units.MARINE && !mariners.Exists(x => x.unit.Tag == unit.Tag))
+                    mariners.Add(new UnitWrapper(unit));
+
+                if (unit.UnitType == Units.MARAUDER && !marauders.Exists(x => x.unit.Tag == unit.Tag))
+                    marauders.Add(new UnitWrapper(unit));
+
+                if (unit.UnitType == Units.MEDIVAC && !medivacs.Exists(x => x.Tag == unit.Tag))
+                    medivacs.Add(new Unit(unit));
 
             }
             List<Unit> visibleUnits = new List<Unit>(obs.Observation.RawData.Units);
@@ -181,56 +196,43 @@ namespace Bot {
             // maintain state
 
             List<UnitWrapper> tempMarauders = new List<UnitWrapper>();
-            List<UnitWrapper> toDelete  = new List<UnitWrapper>();
-
-            foreach (UnitWrapper marauder in marauders)
-            {
-                Unit foundMarauder = visibleUnits.Find(x => x.Tag == marauder.unit.Tag);
-                if (foundMarauder == null)
-                {
-                    toDelete.Add(marauder);   
-                }
-                else
-                {
-                    marauder.unit = foundMarauder;
-                }
-            }
-
-            foreach(UnitWrapper delete in toDelete)
-            {
-                marauders.Remove(delete);
-            }
-
-            toDelete.Clear();
-
-            foreach (UnitWrapper marine in mariners)
-            {
-                Unit foundMarine = visibleUnits.Find(x => x.Tag == marine.unit.Tag);
-                if (foundMarine == null)
-                {
-                    toDelete.Add(marine);
-                }
-                else
-                {
-                    marine.unit = foundMarine;
-                }
-            }
-
-            foreach (UnitWrapper delete in toDelete)
-            {
-                mariners.Remove(delete);
-            }
+            MaintainUnitWrapperList(marauders, visibleUnits, Units.MARAUDER);
+            MaintainUnitWrapperList(mariners, visibleUnits, Units.MARINE);
+            //MaintainUnitWrapperList(medivacs, visibleUnits, Units.MEDIVAC);
             // copy over state values?
 
 
             //these are reset every frame
             this.units.army.AddRange(mariners);
             this.units.army.AddRange(marauders);
+            this.units.armySupport.AddRange(medivacs);
 
             this.units.mineralFields = GetUnits(Units.MineralFields, alliance: Alliance.Neutral);
             this.units.vespeneGeysers = GetUnits(Units.VESPENE_GEYSER, alliance: Alliance.Neutral);
             this.units.vespeneGeysers.AddRange(GetUnits(Units.SPACE_PLATFORM_GEYSER, alliance: Alliance.Neutral));
 
+        }
+
+        private void MaintainUnitWrapperList(List<UnitWrapper> units, List<Unit> visibleUnits, uint unitType)
+        {
+            List<UnitWrapper> toDelete = new List<UnitWrapper>();
+            foreach (UnitWrapper unit in units)
+            {
+                Unit foundUnit = visibleUnits.Find(x => x.Tag == unit.unit.Tag);
+                if (foundUnit == null)
+                {
+                    toDelete.Add(unit);
+                }
+                else
+                {
+                    unit.unit = foundUnit;
+                }
+            }
+
+            foreach (UnitWrapper delete in toDelete)
+            {
+                units.Remove(delete);
+            }
         }
 
         private void PopulateEnemyInventory()
@@ -334,7 +336,10 @@ namespace Bot {
 
         public void Attack(List<UnitWrapper> units, Vector3 target, bool melee = false)
         {
-
+            // micro things like pull back if you are alone    
+            // also pull back micro as a group if we are part of the clump?
+            // or pull back if you have low hp and others around you have more
+            
             foreach (UnitWrapper attackingUnit in units)
             { 
                 if (GetDistance(attackingUnit.unit, target) < 3)
@@ -424,7 +429,7 @@ namespace Bot {
                 var orders = GetUnitOrders(worker);
                 if (orders == 0) return worker;
 
-                if (orders != Abilities.GATHER_MINERALS) continue;
+                if (orders != Abilities.GATHER_MINERALS && orders != Abilities.RETURN_MINERALS) continue;
                 return worker;
             }
 

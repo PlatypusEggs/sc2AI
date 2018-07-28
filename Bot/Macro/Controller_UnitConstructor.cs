@@ -32,6 +32,16 @@ namespace Bot
             AddAction(action);
 
         }
+        public void TrainMedivac(Unit starport)
+        {
+            if (starport == null) return;
+            if (starport.Orders.Count > 1)
+                return;
+
+            var action = CreateRawUnitCommand(Abilities.TRAIN_MEDIVAC);
+            action.ActionRaw.UnitCommand.UnitTags.Add(starport.Tag);
+            AddAction(action);
+        }
 
         public void TrainMarine(Unit barracks)
         {
@@ -155,7 +165,7 @@ namespace Bot
             {
                 if (responses.Placements[i].Result == ActionResult.Success)
                 {
-                    if (queries.Placements[i].AbilityId == Abilities.BUILD_BARRACKS)
+                    if (queries.Placements[i].AbilityId == Abilities.BUILD_BARRACKS || queries.Placements[i].AbilityId == Abilities.BUILD_BARRACKS | queries.Placements[i].AbilityId == Abilities.BUILD_STARPORT || queries.Placements[i].AbilityId == Abilities.BUILD_FACTORY)
                     {
                         if (responses.Placements[i + 1].Result == ActionResult.Success)
                         {
@@ -178,7 +188,7 @@ namespace Bot
                         AddAction(constructAction);
                     }
                 }
-                else if(queries.Placements[i].AbilityId == Abilities.BUILD_BARRACKS)
+                else if (queries.Placements[i].AbilityId == Abilities.BUILD_BARRACKS || queries.Placements[i].AbilityId == Abilities.BUILD_BARRACKS | queries.Placements[i].AbilityId == Abilities.BUILD_STARPORT || queries.Placements[i].AbilityId == Abilities.BUILD_FACTORY)
                 {
                     i++;
                 }
@@ -470,17 +480,18 @@ namespace Bot
         {
             if (units.workers.Count == 0) return false;
 
+            if (buildingType != Units.SUPPLY_DEPOT)
+            {
+                foreach (Unit unit in units.workers)
+                {
+                    if (GetUnitOrders(unit) == Abilities.FromBuilding[buildingType])
+                        return false;
+                }
+            }
+
             // if we don't have a CC...make one
             if (units.resourceCenters.Count == 0 && buildingType != Units.COMMAND_CENTER)
                 return false;
-            //foreach (var building in units.resourceCenters)
-            //{
-            //    if (building.BuildProgress < 1.0) return false;
-            //}
-
-            //why is this code here?
-            //foreach (var building in units.depots)
-            //    if (building.BuildProgress < 0.3) return false;
 
             if (buildingType == Units.SUPPLY_DEPOT)
             {
@@ -497,7 +508,9 @@ namespace Bot
                 }
                 if (maxSupply - currentSupply <= 5 && pendingSupplyDepots == 0)
                     return (minerals >= 100);
-                else if (maxSupply == currentSupply && pendingSupplyDepots <= 1)
+                else if (maxSupply - currentSupply <= 3 && pendingSupplyDepots <= 1 && currentSupply > 15)
+                    return (minerals >= 100);
+                else if (maxSupply - currentSupply <= 1 && pendingSupplyDepots <= 2 && currentSupply > 15)
                     return (minerals >= 100);
                 else
                     return
@@ -507,11 +520,30 @@ namespace Bot
             if (buildingType == Units.BARRACKS)
             {
 
-                if (units.barracks.Count > 7)
-                //if (units.barracks.Count >= 2)
+                if (units.barracks.Count > 13)
                     return false;
                 //don't go crazy.
+
                 if (units.barracks.Count / 2f < units.resourceCenters.Count)
+                    return (minerals >= 150);
+                
+
+            }
+
+            if (buildingType == Units.FACTORY)
+            {
+
+                if (units.barracks.Count > 1 && units.factories.Count == 0)
+                    return (minerals >= 150);
+            }
+
+            if (buildingType == Units.STARPORT)
+            {
+                if (units.factories.Count == 0)
+                    return false;
+                if (units.starports.Count > 3)
+                    return false;
+                if (units.starports.Count < units.resourceCenters.Count / 2)
                     return (minerals >= 150);
             }
 

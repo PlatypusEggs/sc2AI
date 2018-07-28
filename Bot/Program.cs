@@ -19,8 +19,8 @@ namespace Bot
         private static string mapName = "(2)AcidPlantLE.SC2Map";
         //        private static string mapName = "FrostLE.SC2Map";
         private static Race opponentRace = Race.Zerg;
-        //rarely beat harder
-        private static Difficulty opponentDifficulty = Difficulty.Harder;
+        //often beat harder
+        private static Difficulty opponentDifficulty = Difficulty.VeryHard;
 
         public static GameConnection gc = null;
         

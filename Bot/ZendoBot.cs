@@ -65,6 +65,8 @@ namespace Bot
             bool closeToSupplyBlocked = false;
             bool needToExpand = false;
             bool needToResearch = false;
+            double tooLong = 100;
+
             //TODO
 
             // build tech up to medivacs
@@ -89,20 +91,25 @@ namespace Bot
                 if (!controller.chatLog.Contains("gg"))
                     controller.Chat("gg");                
             }
-            //var watch = System.Diagnostics.Stopwatch.StartNew();
-            //watch.Stop();
-            //Logger.Info("Building supply depots" + watch.ElapsedMilliseconds.ToString());
+
 
             //keep on buildings depots if supply is tight
             //if (controller.maxSupply - controller.currentSupply <= 5 && controller.currentSupply != controller.maxSupply)
             //{
             //    closeToSupplyBlocked = true;
-                if (controller.CanConstruct(Units.SUPPLY_DEPOT))
+
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            if (controller.CanConstruct(Units.SUPPLY_DEPOT))
                 {
                     controller.Construct(Units.SUPPLY_DEPOT);
                 }
             //}
+            watch.Stop();
+            if(watch.ElapsedMilliseconds > tooLong)
+                Logger.Info("building supply depots took:" + watch.ElapsedMilliseconds.ToString());
 
+
+            watch = System.Diagnostics.Stopwatch.StartNew();
 
             // if oversaturated
             if (controller.units.resourceCenters.Count == 0)
@@ -129,30 +136,53 @@ namespace Bot
                     }
                 }
             }
+            watch.Stop();
+            if (watch.ElapsedMilliseconds > tooLong)
+                Logger.Info("oversaturation determination took:" + watch.ElapsedMilliseconds.ToString());
+
+            watch = System.Diagnostics.Stopwatch.StartNew();
 
             //build Command Center
             if (controller.CanConstruct(Units.COMMAND_CENTER) && needToExpand)
             {
                 controller.Construct(Units.COMMAND_CENTER);
             }
+            watch.Stop();
+            if (watch.ElapsedMilliseconds > tooLong)
+                Logger.Info("building command centers took:" + watch.ElapsedMilliseconds.ToString());
 
+            watch = System.Diagnostics.Stopwatch.StartNew();
             //set rally points
             controller.setBuildingCCRallyPoints();
+            watch.Stop();
+            if (watch.ElapsedMilliseconds > tooLong)
+                Logger.Info("setBuildingCCRallyPoints took:" + watch.ElapsedMilliseconds.ToString());
+
+            watch = System.Diagnostics.Stopwatch.StartNew();
 
             //populate refineries and check for over saturation
-            if(controller.frame % 60 == 0)
+            if (controller.frame % 60 == 0)
             {
                 controller.DealWithOverSaturation(controller.units.resourceCenters);
                 controller.PopulateRefineries();
                 controller.DealWithOverSaturation(controller.units.refineries);
                 controller.DealWithLazyWorkers();
             }
+            watch.Stop();
+            if (watch.ElapsedMilliseconds > tooLong)
+                Logger.Info("DEAL WITH took:" + watch.ElapsedMilliseconds.ToString());
+
 
             if (!needToExpand)
             {
+                watch = System.Diagnostics.Stopwatch.StartNew();
+
                 needToResearch = controller.researchTech();
                 controller.ClotheNakedBarracks();
                 controller.ClotheNakedStarports();
+                watch.Stop();
+                if (watch.ElapsedMilliseconds > tooLong)
+                    Logger.Info("Clothe took:" + watch.ElapsedMilliseconds.ToString());
 
                 //train workers
                 foreach (var cc in controller.units.resourceCenters)
@@ -162,6 +192,8 @@ namespace Bot
 
                 }
 
+                watch = System.Diagnostics.Stopwatch.StartNew();
+
                 controller.ConstructV2();
 
                 //build Refineieierries
@@ -169,6 +201,9 @@ namespace Bot
                 {
                     controller.Construct(Units.REFINERY);
                 }
+                watch.Stop();
+                if (watch.ElapsedMilliseconds > tooLong)
+                    Logger.Info("Construct V2:" + watch.ElapsedMilliseconds.ToString());
 
                 //train medivacs units
                 if (!closeToSupplyBlocked && !needToResearch && controller.units.armySupport.Count < controller.units.army.Count / 2)
@@ -217,10 +252,25 @@ namespace Bot
 
 
             //Army stuff
-
+            watch = System.Diagnostics.Stopwatch.StartNew();
             controller.ManageArmyMovements();
+            watch.Stop();
+            if (watch.ElapsedMilliseconds > tooLong)
+                Logger.Info("ManageArmyMovements took:" + watch.ElapsedMilliseconds.ToString());
+
+            watch = System.Diagnostics.Stopwatch.StartNew();
             controller.ManageStim();
+            watch.Stop();
+            if (watch.ElapsedMilliseconds > tooLong)
+                Logger.Info("ManageStim took:" + watch.ElapsedMilliseconds.ToString());
+
+            watch = System.Diagnostics.Stopwatch.StartNew();
             controller.spendOrbitalEnergy();
+            watch.Stop();
+            if (watch.ElapsedMilliseconds > tooLong)
+                Logger.Info("spendOrbitalEnergy took:" + watch.ElapsedMilliseconds.ToString());
+
+
 
 
             return controller.CloseFrame();

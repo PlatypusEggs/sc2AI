@@ -523,9 +523,17 @@ namespace Bot
                 if (units.barracks.Count > 13)
                     return false;
                 //don't go crazy.
-
-                if (units.barracks.Count / 2f < units.resourceCenters.Count)
-                    return (minerals >= 150);
+                if (units.resourceCenters.Count <= 3)
+                {
+                    if (units.barracks.Count / 2f < units.resourceCenters.Count)
+                        return (minerals >= 150);
+                }
+                else
+                {
+                    if (units.barracks.Count / 4f < units.resourceCenters.Count)
+                        return (minerals >= 150);
+                }
+                
                 
 
             }

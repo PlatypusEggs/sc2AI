@@ -83,7 +83,7 @@ namespace Bot
 
             //Logger.Info("averageDistance = " + somePercentileOfDistancesFromTheMedian + " " + medianX + " " + medianY);
             // This number needs to scale with the army count!
-            if (somePercentileOfDistancesFromTheMedian > 2 * (units.army.Count / 20))
+            if (somePercentileOfDistancesFromTheMedian > 2 * (units.army.Count / 20f))
             {
                 armyManagementMode = ArmyManagementMode.clumpMode;
             }
@@ -92,7 +92,7 @@ namespace Bot
                 // is this average distance small? (Are we well clumped)?
                 if (enemyArmyCount == 0)
                 {
-                    if (units.army.Count > (units.workers.Count / 2.1))
+                    if (units.army.Count > (units.workers.Count / 2.2f))
                         armyManagementMode = ArmyManagementMode.attackMode;
                     else if (units.army.Count <= (units.workers.Count / 4))
                         armyManagementMode = ArmyManagementMode.defendMode;

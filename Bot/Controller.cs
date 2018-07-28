@@ -363,7 +363,7 @@ namespace Bot {
                     action = CreateRawUnitCommand(Abilities.MOVE);
                     if (melee)
                     {
-                        Logger.Info("we are in range of a melee unit!");
+                        //Logger.Info("we are in range of a melee unit!");
                         // to close. stutter step away!
                         if (GetDistance(attackingUnit.unit, target) <= 4)
                         {
